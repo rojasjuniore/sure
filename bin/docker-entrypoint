@@ -1,8 +1,20 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
+
+echo "=== Starting Sure Finance ==="
+echo "DATABASE_URL: ${DATABASE_URL:0:30}..."
+echo "RAILS_ENV: $RAILS_ENV"
+echo "PORT: $PORT"
 
 # If running the rails server then create or migrate existing database
 if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
-  ./bin/rails db:prepare
+  echo "=== Running db:prepare ==="
+  ./bin/rails db:prepare 2>&1 || {
+    echo "=== db:prepare FAILED ==="
+    exit 1
+  }
+  echo "=== db:prepare completed ==="
 fi
 
+echo "=== Starting Rails server ==="
 exec "${@}"
